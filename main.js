@@ -18,6 +18,16 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// Background toggle state
+let showBackground = true;
+
+// Add keyboard controls
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'b' || event.key === 'B') {
+        showBackground = !showBackground;
+    }
+});
+
 // Create render targets
 const renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight);
 
@@ -27,6 +37,7 @@ loader.load('./sagenetLogo.svg', function(data) {
     const paths = data.paths;
     const points = [];
     const delays = [];
+    const colors = [];
     
     // Extract points from SVG paths
     paths.forEach(path => {
@@ -46,6 +57,16 @@ loader.load('./sagenetLogo.svg', function(data) {
                 );
                 // Tighter delay range for more coherent formation
                 delays.push(Math.random() * 1.2);
+                
+                // Add random color from our palette
+                const colorChoices = [
+                    new THREE.Color(0x1a365d),  // dark blue
+                    new THREE.Color(0x7bb2e3),  // light blue
+                    new THREE.Color(0xff7f50),  // orange
+                    new THREE.Color(0xffffff)   // white
+                ];
+                const color = colorChoices[Math.floor(Math.random() * colorChoices.length)];
+                colors.push(color.r, color.g, color.b);
             });
         }
     });
@@ -62,6 +83,9 @@ loader.load('./sagenetLogo.svg', function(data) {
     
     // Add delays
     geometry.setAttribute('delay', new THREE.Float32BufferAttribute(delays, 1));
+    
+    // Add colors
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
     
     // Create point cloud material with custom shaders
     const pointsMaterial = new THREE.ShaderMaterial({
@@ -168,11 +192,11 @@ adjustPlaneScale();
 // Array of different geometries
 const geometries = [
     new THREE.BoxGeometry(3, 3, 3),
-    new THREE.SphereGeometry(4, 40, 40),
-    new THREE.TorusGeometry(1.4, 0.6, 16, 100),
-    new THREE.TetrahedronGeometry(1.6),
-    new THREE.OctahedronGeometry(1.6),
-    new THREE.IcosahedronGeometry(1.6)
+    // new THREE.SphereGeometry(4, 40, 40),
+    // new THREE.TorusGeometry(1.4, 0.6, 16, 100),
+    new THREE.TetrahedronGeometry(2),
+    new THREE.OctahedronGeometry(2),
+    new THREE.IcosahedronGeometry(2)
 ];
 
 // Create initial material with random color
@@ -194,12 +218,19 @@ const geometryRenderTarget = new THREE.WebGLRenderTarget(
     window.innerHeight
 );
 
-// Function to generate random color
-const getRandomColor = () => {
-    const hue = Math.random();
-    const saturation = 0.7;
-    const lightness = 0.6;
-    return new THREE.Color().setHSL(hue, saturation, lightness);
+// Colors for geometry cycling
+const geometryColors = [
+    new THREE.Color(0xED8C00),  // orange
+    new THREE.Color(0x006CA9),  // blue
+    new THREE.Color(0x003968)   // dark blue
+];
+let currentColorIndex = 0;
+
+// Function to get next color in cycle
+const getNextColor = () => {
+    const color = geometryColors[currentColorIndex];
+    currentColorIndex = (currentColorIndex + 1) % geometryColors.length;
+    return color;
 };
 
 // Variables for timing
@@ -225,7 +256,7 @@ function animate(currentTime) {
 
     // Change color
     if (time - lastColorChange > colorChangeInterval) {
-        material.color = getRandomColor();
+        material.color = getNextColor();
         lastColorChange = time;
     }
 
@@ -250,7 +281,7 @@ function animate(currentTime) {
     renderer.render(geometryScene, camera);
 
     // Update uniforms for final composition
-    finalPlaneMaterial.uniforms.tBackground.value = renderTarget.texture;
+    finalPlaneMaterial.uniforms.tBackground.value = showBackground ? renderTarget.texture : null;
     finalPlaneMaterial.uniforms.tGeometry.value = geometryRenderTarget.texture;
 
     // Render final composition to screen

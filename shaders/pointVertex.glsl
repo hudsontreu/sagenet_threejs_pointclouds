@@ -3,8 +3,10 @@ uniform float animationProgress;
 
 attribute vec3 targetPosition;
 attribute float delay;
+attribute vec3 color;
 
 varying float vOpacity;
+varying vec3 vColor;
 
 // Noise function
 float random(vec2 st) {
@@ -73,11 +75,12 @@ void main() {
     }
     
     vOpacity = opacity;
+    vColor = color;
     
     vec4 mvPosition = modelViewMatrix * vec4(currentPos, 1.0);
     gl_Position = projectionMatrix * mvPosition;
     
     // Larger points during logo formation
     float logoPhase = 1.0 - abs(progress - 0.5) * 2.0;
-    gl_PointSize = mix(2.0, 4.0, logoPhase);
+    gl_PointSize = mix(1.0, 2.0, logoPhase);
 }
