@@ -11,7 +11,7 @@ const geometryScene = new THREE.Scene();
 
 // Create camera
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 5;
+camera.position.z = 8;
 
 // Create renderer
 const renderer = new THREE.WebGLRenderer();
@@ -41,7 +41,7 @@ loader.load('./sagenetLogo.svg', function(data) {
     
     // Extract points from SVG paths
     paths.forEach(path => {
-        const divisions = 200; // Increased from 100 for higher density
+        const divisions = 300; // Increased for clearer letter formation
         
         for (let i = 0; i < path.subPaths.length; i++) {
             const subPath = path.subPaths[i];
@@ -51,9 +51,9 @@ loader.load('./sagenetLogo.svg', function(data) {
             points2D.forEach(point => {
                 const randomOffset = Math.random() * Math.PI * 2;
                 points.push(
-                    point.x * 0.015 + Math.sin(randomOffset) * 0.05, // Reduced random variation
-                    -point.y * 0.015 + Math.cos(randomOffset) * 0.05, // Reduced random variation
-                    (Math.random() - 0.5) * 0.3 // Reduced Z depth for clearer formation
+                    point.x * 0.025 + Math.sin(randomOffset) * 0.02, // Scaled up X position
+                    -point.y * 0.025 + Math.cos(randomOffset) * 0.02, // Scaled up Y position
+                    (Math.random() - 0.5) * 0.1 // Z depth unchanged for sharpness
                 );
                 // Tighter delay range for more coherent formation
                 delays.push(Math.random() * 1.2);
@@ -194,9 +194,9 @@ const geometries = [
     new THREE.BoxGeometry(3, 3, 3),
     // new THREE.SphereGeometry(4, 40, 40),
     // new THREE.TorusGeometry(1.4, 0.6, 16, 100),
-    new THREE.TetrahedronGeometry(2),
-    new THREE.OctahedronGeometry(2),
-    new THREE.IcosahedronGeometry(2)
+    new THREE.TetrahedronGeometry(2.5),
+    new THREE.OctahedronGeometry(2.5),
+    new THREE.IcosahedronGeometry(2.5)
 ];
 
 // Create initial material with random color

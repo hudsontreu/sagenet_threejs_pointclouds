@@ -60,9 +60,9 @@ void main() {
     // Hold logo shape (0.3 to 0.7)
     else if (progress < 0.7) {
         currentPos = logoPos;
-        // Very subtle movement during logo formation
-        float wobble = sin(time * 2.0 + delay * 10.0) * 0.02;
-        currentPos += vec3(wobble, wobble, wobble);
+        // Extremely subtle movement during logo formation
+        float wobble = sin(time * 1.5 + delay * 8.0) * 0.005;
+        currentPos += vec3(wobble, wobble, 0.0); // No Z-axis wobble for clearer text
         opacity = 1.0;
     }
     // Flowing out (0.7 to 1.0)
@@ -80,7 +80,9 @@ void main() {
     vec4 mvPosition = modelViewMatrix * vec4(currentPos, 1.0);
     gl_Position = projectionMatrix * mvPosition;
     
-    // Larger points during logo formation
+    // Adjust point size based on phase
     float logoPhase = 1.0 - abs(progress - 0.5) * 2.0;
-    gl_PointSize = mix(1.0, 2.0, logoPhase);
+    float baseSize = 1.5; // Slightly larger base size
+    float logoSize = 2.5; // Larger size during logo formation
+    gl_PointSize = mix(baseSize, logoSize, logoPhase);
 }
