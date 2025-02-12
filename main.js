@@ -30,7 +30,7 @@ loader.load('./sagenetLogo.svg', function(data) {
     
     // Extract points from SVG paths
     paths.forEach(path => {
-        const divisions = 30; // Increased point density
+        const divisions = 200; // Increased from 100 for higher density
         
         for (let i = 0; i < path.subPaths.length; i++) {
             const subPath = path.subPaths[i];
@@ -38,13 +38,14 @@ loader.load('./sagenetLogo.svg', function(data) {
             
             // Convert 2D points to 3D and add some randomness in Z
             points2D.forEach(point => {
+                const randomOffset = Math.random() * Math.PI * 2;
                 points.push(
-                    point.x * 0.01, // Scale down the points
-                    -point.y * 0.01, // Flip Y coordinates
-                    (Math.random() - 0.5) * 0.2 // Random Z depth
+                    point.x * 0.015 + Math.sin(randomOffset) * 0.05, // Reduced random variation
+                    -point.y * 0.015 + Math.cos(randomOffset) * 0.05, // Reduced random variation
+                    (Math.random() - 0.5) * 0.3 // Reduced Z depth for clearer formation
                 );
-                // Random delay for each point
-                delays.push(Math.random());
+                // Tighter delay range for more coherent formation
+                delays.push(Math.random() * 1.2);
             });
         }
     });
