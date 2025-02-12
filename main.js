@@ -194,9 +194,9 @@ const geometries = [
     new THREE.BoxGeometry(3, 3, 3),
     // new THREE.SphereGeometry(4, 40, 40),
     // new THREE.TorusGeometry(1.4, 0.6, 16, 100),
-    new THREE.TetrahedronGeometry(2.5),
-    new THREE.OctahedronGeometry(2.5),
-    new THREE.IcosahedronGeometry(2.5)
+    new THREE.TetrahedronGeometry(3),
+    new THREE.OctahedronGeometry(3),
+    new THREE.IcosahedronGeometry(3)
 ];
 
 // Create initial material with random color
@@ -237,7 +237,7 @@ const getNextColor = () => {
 let lastColorChange = 0;
 let lastShapeChange = 0;
 const colorChangeInterval = 100;
-const shapeChangeInterval = 500;
+const shapeChangeInterval = 400;
 
 // Animation loop
 function animate(currentTime) {
